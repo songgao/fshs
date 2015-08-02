@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"net"
 	"net/http"
 	"os"
 	"strings"
@@ -45,7 +46,7 @@ func main() {
 			return
 		}
 
-		if acceptAllDeadline.After(time.Now()) {
+		if addr, er := net.ResolveTCPAddr("tcp", r.RemoteAddr); (er == nil && addr.IP.IsLoopback()) || acceptAllDeadline.After(time.Now()) {
 			fsh.ServeHTTP(w, r)
 			fmt.Printf("\"GET\" Request (%s) from %s has been served.\n", r.URL, r.RemoteAddr)
 			return
